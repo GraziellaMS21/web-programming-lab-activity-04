@@ -1,7 +1,15 @@
 <?php
 require_once "../classes/book.php";
 $bookObj = new Book();
+
+$search = "";
+// $genre = "";
+
+if($_SERVER["REQUEST_METHOD"] == "GET"){
+    $search = isset($_GET["search"]) ? trim(htmlspecialchars($_GET["search"])) : "";
+}
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -40,8 +48,10 @@ $bookObj = new Book();
 
         h1 {
             text-align: center;
-            color: #630D0E;
-            margin-bottom: 1.5rem;
+            color: #ffffffff;
+            margin-bottom: 0.5rem;
+            font-size: 3rem;
+            text-shadow: 2px 2px 4px black;
         }
 
         button {
@@ -90,12 +100,82 @@ $bookObj = new Book();
             background-color: #f3e2b3;
             transition: background-color 0.3s ease;
         }
+        
+        .search-container {
+            margin: 1rem 0;
+            display: flex;
+            justify-content: center;
+            width: 80%;
+            max-width: 800px;
+        }
+
+        .search-container form {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem; 
+            width: 100%;
+        }
+
+        .search-container label {
+            font-weight: bold;
+            color: #333;
+            min-width: 60px; 
+        }
+
+        .search-container input[type="search"] {
+            flex: 1;
+            padding: 0.5rem;
+            border: 1px solid #C4A161;
+            border-radius: 5px;
+            outline: none;
+            transition: 0.3s;
+        }
+
+        .search-container input[type="search"]:focus {
+            border-color: #630D0E;
+            box-shadow: 0 0 5px rgba(99, 13, 14, 0.4);
+        }
+
+        .search-container input[type="submit"] {
+            background-color: #630D0E;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            padding: 0.6rem 1.2rem;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s ease, transform 0.2s ease;
+        }
+
+        .search-container input[type="submit"]:hover {
+            background-color: #8d0a0a;
+            transform: scale(1.05);
+        }
+
+        #genre {
+            border-radius: 5px;
+            padding: 0.6rem 1.2rem;
+        }
+
     </style>
 </head>
 <body>
     <div class="container">
+        <h1>VIEW BOOKS</h1>
+        <div class="search-container">
+            <form action="" method="get">
+                <label for="search">Search: </label>
+                <input type="search" name="search" id="search" value="<?= $search ?>">
+                <!-- <select name="genre" id="genre">
+                    <option value="">-- Select Option --</option>
+                    <option value="History" >History</option>
+                    <option value="Science">Science</option>
+                    <option value="Fiction">Fiction</option>
+                </select> -->
+                <input type="submit" value="Search">
+            </form>
+        </div>
         <div class="table-container">
-            <h1>View Products</h1>
             <button><a href="addBook.php">Add Book</a></button>
             <table border="1">
                 <tr class="header">
@@ -108,7 +188,7 @@ $bookObj = new Book();
         
                 <?php 
                 $no = 1;
-                foreach($bookObj->viewBook() as $book) {
+                foreach($bookObj->viewBook($search) as $book) {
                 ?>
                 <tr class="data">
                     <td><?= $no++ ?></td>

@@ -3,8 +3,8 @@
 require_once "../classes/book.php";
 $bookObj = new Book();
 
-$book = ["title"=>"", "author"=>"", "genre"=>"", "publication_year"=>""];
-$errors = ["title"=>"", "author"=>"", "genre"=>"", "publication_year"=>""];
+$book = [];
+$errors = [];
 
 if($_SERVER["REQUEST_METHOD"] == "POST"){
     $book["title"] = trim(htmlspecialchars($_POST["title"]));
@@ -14,6 +14,8 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
 
     if(empty($book["title"])){
         $errors["title"] = "Title is Required";
+    }else if ($bookObj->isBookExist($book["title"])){
+         $errors["title"] = "Book Title Already Exist";
     }
 
     if(empty($book["author"])){
@@ -158,25 +160,25 @@ if($_SERVER["REQUEST_METHOD"] == "POST"){
                 <label for="" class="form-note">Field with <span>*</span> is required</label>
         
                 <label for="title">Book Title: <span>*</span></label>
-                <input type="text" name="title" id="" value="<?= $book["title"] ?>">
-                <p class="errors"><?= $errors["title"] ?></p>
+                <input type="text" name="title" id="" value="<?= $book["title"] ?? "" ?>">
+                <p class="errors"><?= $errors["title"] ?? ""?></p>
         
                 <label for="author">Book Author: <span>*</span></label>
-                <input type="text" name="author" id="" value="<?= $book["author"] ?>">
-                <p class="errors"><?= $errors["author"] ?></p>
+                <input type="text" name="author" id="" value="<?= $book["author"] ?? ""?>">
+                <p class="errors"><?= $errors["author"] ?? ""?></p>
         
                 <label for="genre">Genre <span>*</span></label>
                 <select name="genre" id="">
                     <option value="">--Select Option--</option>
-                    <option value="History" <?= ($book["genre"] == "History") ? "selected" : "" ?>>History</option>
-                    <option value="Science" <?= ($book["genre"] == "Science") ? "selected" : "" ?>>Science</option>
-                    <option value="Fiction" <?= ($book["genre"] == "Fiction") ? "selected" : "" ?>>Fiction</option>
+                    <option value="History" <?= isset($book["genre"]) && ($book["genre"] == "History") ? "selected" : "" ?>>History</option>
+                    <option value="Science" <?= isset($book["genre"]) && ($book["genre"] == "Science") ? "selected" : "" ?>>Science</option>
+                    <option value="Fiction" <?= isset($book["genre"]) && ($book["genre"] == "Fiction") ? "selected" : "" ?>>Fiction</option>
                 </select>
-                <p class="errors"><?= $errors["genre"] ?></p>
+                <p class="errors"><?= $errors["genre"] ?? ""?></p>
         
                 <label for="publication_year">Publication Year: <span>*</span></label>
-                <input type="text" name="publication_year" id="" value="<?= $book["publication_year"] ?>">
-                <p class="errors"><?= $errors["publication_year"] ?></p>
+                <input type="text" name="publication_year" id="" value="<?= $book["publication_year"] ?? ""?>">
+                <p class="errors"><?= $errors["publication_year"] ?? ""?></p>
                 <br>
                 <input type="submit" value="Save Product">
             </form>
