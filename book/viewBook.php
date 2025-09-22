@@ -3,10 +3,14 @@ require_once "../classes/book.php";
 $bookObj = new Book();
 
 $search = "";
-// $genre = "";
+$genre = "";
+
+
 
 if($_SERVER["REQUEST_METHOD"] == "GET"){
     $search = isset($_GET["search"]) ? trim(htmlspecialchars($_GET["search"])) : "";
+    $genre  = isset($_GET["genre"]) ? trim(htmlspecialchars($_GET["genre"])) : "";
+    
 }
 ?>
 
@@ -166,12 +170,12 @@ if($_SERVER["REQUEST_METHOD"] == "GET"){
             <form action="" method="get">
                 <label for="search">Search: </label>
                 <input type="search" name="search" id="search" value="<?= $search ?>">
-                <!-- <select name="genre" id="genre">
+                <select name="genre" id="genre">
                     <option value="">-- Select Option --</option>
-                    <option value="History" >History</option>
-                    <option value="Science">Science</option>
-                    <option value="Fiction">Fiction</option>
-                </select> -->
+                    <option value="History" <?= $genre == "History" ? "selected" : "" ?> >History</option>
+                    <option value="Science" <?= $genre == "Science" ? "selected" : "" ?> >Science</option>
+                    <option value="Fiction" <?= $genre == "Fiction" ? "selected" : "" ?> >Fiction</option>
+                </select>
                 <input type="submit" value="Search">
             </form>
         </div>
@@ -188,7 +192,7 @@ if($_SERVER["REQUEST_METHOD"] == "GET"){
         
                 <?php 
                 $no = 1;
-                foreach($bookObj->viewBook($search) as $book) {
+                foreach($bookObj->viewBook($search, $genre) as $book) {
                 ?>
                 <tr class="data">
                     <td><?= $no++ ?></td>

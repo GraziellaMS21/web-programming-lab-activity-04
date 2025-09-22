@@ -26,11 +26,28 @@ class Book extends Database{
         return $query->execute();
     }
 
-    public function viewBook($search="") {
-        $sql = "SELECT * FROM books WHERE title LIKE CONCAT('%', :search, '%') ORDER BY title ASC";
+    public function viewBook($search="", $genre="") {
+        if($genre != "" && $search != ""){
+            $sql = "SELECT * FROM books WHERE title LIKE CONCAT('%', :search, '%') AND genre = :genre ORDER BY title ASC";
+        }
+        else if($search != ""){
+            $sql = "SELECT * FROM books WHERE title LIKE CONCAT('%', :search, '%') ORDER BY title ASC";
+        }else if($genre != ""){
+            $sql = "SELECT * FROM books WHERE genre = :genre ORDER BY title ASC";
+        }
+        else{
+            $sql = "SELECT * FROM books";
+        }
+            
         // $query = $this->db->connect()->prepare($sql);
         $query = $this->connect()->prepare($sql);
-        $query->bindParam(":search", $search);
+         if($search != ""){
+             $query->bindParam(":search", $search);
+         }
+        if($genre != ""){
+            $query->bindParam(":genre", $genre);
+        }
+
         if($query->execute()){
             return $query->fetchAll();
         }else{
